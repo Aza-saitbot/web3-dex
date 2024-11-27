@@ -1,17 +1,28 @@
 import React, { useRef, useState } from 'react'
 import SettingsIcon from '@mui/icons-material/Settings'
-import { Button, ButtonGroup, Input, Popover, TextField } from '@mui/material'
+import { Button, ButtonGroup, Input, MenuItem, Popover, Select, TextField } from '@mui/material'
+import tokenList from '../tokenList.json'
 
 const buttons = [
-  <Button key={0.5}>O.5%</Button>,
-  <Button key={2.5}>2.5%</Button>,
-  <Button key={5.0}>5.0%</Button>
+  <Button className={'!text-black'} key={0.5}>O.5%</Button>,
+  <Button className={'!text-black'} key={2.5}>2.5%</Button>,
+  <Button className={'!text-black'} key={5.0}>5.0%</Button>
 ]
+
+const settingsProps = {
+  input: {
+    style: {
+      fontSize: 46
+    }
+  }
+}
 const Swap = () => {
   const [isOpenPopup, setIsOpenPopup] = useState(false)
   const [anchorEl, setAnchorEl] = useState(null)
-  const [tokenOneAmount,setTokenOneAmount]=useState(0)
-  const [tokenTwoAmount,setTokenTwoAmount]=useState(0)
+  const [tokenOneAmount, setTokenOneAmount] = useState(0)
+  const [tokenTwoAmount, setTokenTwoAmount] = useState(0)
+  const [tokenOne, setTokenOne] = useState(tokenList[0].ticker);
+  const [tokenTwo, setTokenTwo] = useState(tokenList[1].ticker);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget)
@@ -23,19 +34,19 @@ const Swap = () => {
     setIsOpenPopup(false)
   }
 
-  const onChange=(e)=>{
+  const onChangeAmount = (e) => {
     setTokenOneAmount(e.target.value)
   }
 
   const open = Boolean(anchorEl)
   const id = open ? 'simple-popover' : undefined
 
-  const settingsProps = {
-    input: {
-      style: {
-        fontSize: 46
-      }
-    }
+  const handleChangeOneToken = (event) => {
+    setTokenOne(event.target.value)
+  }
+
+  const handleChangeTwoToken = (event) => {
+    setTokenTwo(event.target.value)
   }
 
   return (
@@ -61,16 +72,47 @@ const Swap = () => {
             onClose={handleClose}
           >
             <div className={'p-4'}>
-              <ButtonGroup variant="text" aria-label="Basic button group">
+              <ButtonGroup  variant="text" aria-label="Basic button group">
                 {buttons}
               </ButtonGroup>
             </div>
           </Popover>
         </div>
         <div className={'grid gap-2 mt-5'}>
-          <Input componentsProps={settingsProps} className={'w-full bg-gray-100 rounded-2xl pl-5'} disableUnderline={true} placeholder={'0'} value={tokenOneAmount} onChange={onChange}  />
+          <div className={'relative'}>
+            <Input componentsProps={settingsProps} className={'w-full h-full bg-gray-100 rounded-2xl pl-5'} disableUnderline={true}
+                   placeholder={'0'} value={tokenOneAmount} onChange={onChangeAmount}/>
+            <div className={'absolute top-1/2 right-5 -translate-y-1/2'}>
+              <Select className={'!rounded-3xl bg-white !text-black'} defaultValue={tokenOne} value={tokenOne} onChange={handleChangeOneToken}>
+                {tokenList.filter(token => token.ticker !== tokenTwo).map(token =>
+                  <MenuItem key={token.ticker} value={token.ticker}>
+                    <div className={'flex gap-2'}>
+                      <img className={'h-6 w-6'} src={token.img} alt={token.ticker}/>
+                      <div>{token.ticker}</div>
+                    </div>
+                  </MenuItem>)
+                }
+              </Select>
+            </div>
+          </div>
 
-          <Input componentsProps={settingsProps} className={'w-full bg-gray-100 rounded-2xl pl-5'} disableUnderline={true} placeholder={'0'} value={tokenTwoAmount} disabled={true} onChange={onChange}  />
+         <div className={'relative'}>
+           <Input componentsProps={settingsProps} className={'w-full h-full bg-gray-100 rounded-2xl pl-5'} disableUnderline={true} placeholder={'0'}
+                  value={tokenTwoAmount} disabled={true} onChange={onChangeAmount}/>
+           <div className={'absolute top-1/2 right-5 -translate-y-1/2'}>
+             <Select className={'!rounded-3xl bg-white !text-black'} value={tokenTwo} onChange={handleChangeTwoToken}>
+               {tokenList.filter(token => token.ticker !== tokenOne).map(token =>
+                 <MenuItem key={token.ticker} value={token.ticker}>
+                   <div className={'flex gap-2'}>
+                     <img className={'h-6 w-6'} src={token.img} alt={token.ticker}/>
+                     <div>{token.ticker}</div>
+                   </div>
+                 </MenuItem>)
+               }
+             </Select>
+           </div>
+         </div>
+
         </div>
       </div>
     </div>
