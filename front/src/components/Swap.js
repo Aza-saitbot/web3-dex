@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react'
 import SettingsIcon from '@mui/icons-material/Settings'
-import { Button, ButtonGroup, Popover } from '@mui/material'
+import { Button, ButtonGroup, Input, Popover, TextField } from '@mui/material'
 
 const buttons = [
   <Button key={0.5}>O.5%</Button>,
@@ -10,6 +10,8 @@ const buttons = [
 const Swap = () => {
   const [isOpenPopup, setIsOpenPopup] = useState(false)
   const [anchorEl, setAnchorEl] = useState(null)
+  const [tokenOneAmount,setTokenOneAmount]=useState(0)
+  const [tokenTwoAmount,setTokenTwoAmount]=useState(0)
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget)
@@ -21,12 +23,24 @@ const Swap = () => {
     setIsOpenPopup(false)
   }
 
+  const onChange=(e)=>{
+    setTokenOneAmount(e.target.value)
+  }
+
   const open = Boolean(anchorEl)
   const id = open ? 'simple-popover' : undefined
 
+  const settingsProps = {
+    input: {
+      style: {
+        fontSize: 46
+      }
+    }
+  }
+
   return (
-    <div className={'flex justify-center pt-30'}>
-      <div className={'bg-white w-1/2 p-4 rounded-2xl'}>
+    <div className={'flex justify-center pt-16'}>
+      <div className={'grid grid-rows-[auto,1fr] bg-white w-[550px] h-[400px] p-4 rounded-2xl'}>
         <div className={'flex justify-between'}>
           <p className={'text-2xl'}>Swap</p>
           <Button aria-describedby={id} variant={'text'} onClick={handleClick}>
@@ -53,9 +67,10 @@ const Swap = () => {
             </div>
           </Popover>
         </div>
-        <div>
+        <div className={'grid gap-2 mt-5'}>
+          <Input componentsProps={settingsProps} className={'w-full bg-gray-100 rounded-2xl pl-5'} disableUnderline={true} placeholder={'0'} value={tokenOneAmount} onChange={onChange}  />
 
-          Content
+          <Input componentsProps={settingsProps} className={'w-full bg-gray-100 rounded-2xl pl-5'} disableUnderline={true} placeholder={'0'} value={tokenTwoAmount} disabled={true} onChange={onChange}  />
         </div>
       </div>
     </div>
