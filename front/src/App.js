@@ -7,7 +7,7 @@ import Header from './components/Header'
 
 const App = () =>{
   return (
-    <div className="text-white h-screen w-screen bg-gradient-to-r from-cyan-500 to-blue-500">
+    <div className="h-screen w-screen bg-gradient-to-r from-cyan-500 to-blue-500">
       <Header/>
       <Routes>
         <Route path="/" element={<Swap />} />
