@@ -1,3 +1,88 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+/* background of the scrollbar except button or resizer */
+.windows-scroll ::-webkit-scrollbar-track {
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.windows-scroll ::-webkit-scrollbar-corner {
+    background: transparent;
+    cursor: pointer;
+}
+
+/* scrollbar itself */
+.windows-scroll ::-webkit-scrollbar-thumb {
+    transition: all 150ms;
+    background-color: rgba(0, 0, 0, 0);
+    border-radius: 16px;
+    border: 2px solid rgba(0, 0, 0, 0);
+    background-clip: padding-box;
+}
+
+.windows-scroll:hover ::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.32);
+}
+
+.windows-scroll ::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(0, 0, 0, 0.56);
+}
+
+/* set button(top and bottom of the scrollbar) */
+.windows-scroll ::-webkit-scrollbar-button {
+    display: none;
+}
+
+.windows-scroll #root ::-webkit-scrollbar-thumb,
+.windows-scroll #ui-root-container ::-webkit-scrollbar-thumb {
+    transition: all 150ms;
+    background-color: rgba(0, 0, 0, 0);
+    border-radius: 16px;
+    border: 1px solid rgba(0, 0, 0, 0);
+    background-clip: padding-box;
+}
+
+.windows-scroll #root ::-webkit-scrollbar,
+.windows-scroll #ui-root-container ::-webkit-scrollbar {
+    height: 8px;
+    width: 8px;
+}
+
+.windows-scroll #root ::-webkit-scrollbar-track,
+.windows-scroll #ui-root-container ::-webkit-scrollbar-track {
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.windows-scroll #root ::-webkit-scrollbar-corner,
+.windows-scroll #ui-root-container ::-webkit-scrollbar-corner {
+    background: transparent;
+    cursor: pointer;
+}
+
+/* scrollbar itself */
+.windows-scroll #root ::-webkit-scrollbar-thumb,
+.windows-scroll #ui-root-container ::-webkit-scrollbar-thumb {
+    transition: all 150ms;
+    background-color: rgba(0, 0, 0, 0);
+    border-radius: 16px;
+    border: 1px solid rgba(0, 0, 0, 0);
+    background-clip: padding-box;
+}
+
+.windows-scroll #root:hover ::-webkit-scrollbar-thumb,
+.windows-scroll #ui-root-container:hover ::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.32);
+}
+
+.windows-scroll #root ::-webkit-scrollbar-thumb:hover,
+.windows-scroll #ui-root-container ::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(0, 0, 0, 0.56);
+}
+
+/* set button(top and bottom of the scrollbar) */
+.windows-scroll #root ::-webkit-scrollbar-button,
+.windows-scroll #ui-root-container ::-webkit-scrollbar-button {
+    display: none;
+}
