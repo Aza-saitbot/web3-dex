@@ -1,10 +1,11 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import SettingsIcon from '@mui/icons-material/Settings'
 import { Button, ButtonGroup, Popover } from '@mui/material'
 import tokenList from '../tokenList.json'
 import { TokenInput } from './TokenInput'
 import SwapVertIcon from '@mui/icons-material/SwapVert'
 import { SelectedTokenDialog } from './SelectedTokenDialog'
+import axios from 'axios';
 
 
 const buttons = [0.5, 2.5, 5.0].map((value) => (
@@ -21,20 +22,28 @@ const Swap = () => {
   const [tokenTwo, setTokenTwo] = useState(tokenList[1])
   const [isRotating, setIsRotating] = useState(false)
 
-  const [isOpenModal, setIsOpenModal] = useState(false);
-  const [modeSelectedToken,setModeSelectedToken]=useState(1)
-  const [selectedToken,setSelectedToken]=useState(null)
-
+  const [isOpenModal, setIsOpenModal] = useState(false)
+  const [modeSelectedToken, setModeSelectedToken] = useState(1)
+  const [prices,setPrices]=useState(null)
 
   const onOpenModal = () => {
-    setIsOpenModal(true);
-  };
+    setIsOpenModal(true)
+  }
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget)
     setIsOpenPopup(true)
   }
 
+
+  const onChangeAmountOne=(e)=> {
+    setTokenOneAmount(e.target.value);
+    if(e.target.value && prices){
+      setTokenTwoAmount((e.target.value * prices.ratio).toFixed(2))
+    }else{
+      setTokenTwoAmount(null);
+    }
+  }
   const handleClose = () => {
     setAnchorEl(null)
     setIsOpenPopup(false)
@@ -49,28 +58,40 @@ const Swap = () => {
   }
 
   const onSelectedToken = (selectedToken) => {
-
-    setTokenOneAmount(null);
-    setTokenTwoAmount(null);
+    setPrices(null)
+    setTokenOneAmount(null)
+    setTokenTwoAmount(null)
     if (modeSelectedToken === 1) {
-      setTokenOne(selectedToken);
-
+      setTokenOne(selectedToken)
+      fetchPrices(selectedToken.address, tokenTwo.address)
     } else {
-      setTokenTwo(selectedToken);
-
+      setTokenTwo(selectedToken)
+      fetchPrices(selectedToken.address, tokenTwo.address)
     }
-    setIsOpenModal(false);
+    setIsOpenModal(false)
   }
   const open = Boolean(anchorEl)
   const id = open ? 'simple-popover' : undefined
+
+  const fetchPrices = async (one, two) => {
+    const res = await axios.get(`http://localhost:5000/token-price`, {
+      params: {addressOne: one, addressTwo: two}
+    })
+    setPrices(res.data)
+  }
 
   const onSwap = () => {
 
   }
 
+  useEffect(()=>{
+    fetchPrices(tokenList[0].address, tokenList[1].address)
+  }, [])
+
   return (
     <>
-      <SelectedTokenDialog tokens={tokenList} open={isOpenModal} handleCloseModal={()=>setIsOpenModal(false)} setSelectedToken={onSelectedToken}/>
+      <SelectedTokenDialog tokens={tokenList} open={isOpenModal} handleCloseModal={() => setIsOpenModal(false)}
+                           setSelectedToken={onSelectedToken}/>
       <div className="flex justify-center pt-16">
         <div className="grid gap-2 grid-rows-[auto,1fr] bg-white w-[550px] h-[400px] p-4 rounded-2xl">
           <div className="flex justify-between">
@@ -96,8 +117,8 @@ const Swap = () => {
           <div className="grid relative gap-2 mt-5">
             <TokenInput
               amount={tokenOneAmount}
-              onAmountChange={(e) => setTokenOneAmount(e.target.value)}
-              onOpenModal={()=>{
+              onAmountChange={onChangeAmountOne}
+              onOpenModal={() => {
                 setModeSelectedToken(1)
                 onOpenModal()
               }}
@@ -116,14 +137,16 @@ const Swap = () => {
             <TokenInput
               amount={tokenTwoAmount}
               onAmountChange={(e) => setTokenTwoAmount(e.target.value)}
-              onOpenModal={()=>{
+              onOpenModal={() => {
                 setModeSelectedToken(2)
                 onOpenModal()
               }}
+              disabled={true}
               selectedToken={tokenTwo}
             />
           </div>
-          <Button className={'!py-4 !bg-gradient-to-r from-cyan-400 to-blue-400 !text-white'} disabled={!tokenOneAmount || !tokenTwoAmount} variant="outlined" onClick={onSwap}>
+          <Button className={'!py-4 !bg-gradient-to-r from-cyan-400 to-blue-400 !text-white'} disabled={!tokenOneAmount || !tokenTwoAmount}
+                  variant="outlined" onClick={onSwap}>
             Swap
           </Button>
         </div>
