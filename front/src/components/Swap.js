@@ -72,7 +72,7 @@ const Swap = () => {
     <>
       <SelectedTokenDialog tokens={tokenList} open={isOpenModal} handleCloseModal={()=>setIsOpenModal(false)} setSelectedToken={onSelectedToken}/>
       <div className="flex justify-center pt-16">
-        <div className="grid grid-rows-[auto,1fr] bg-white w-[550px] h-[400px] p-4 rounded-2xl">
+        <div className="grid gap-2 grid-rows-[auto,1fr] bg-white w-[550px] h-[400px] p-4 rounded-2xl">
           <div className="flex justify-between">
             <p className="text-2xl">Swap</p>
             <Button aria-describedby={id} variant="text" onClick={handleClick}>
@@ -123,7 +123,7 @@ const Swap = () => {
               selectedToken={tokenTwo}
             />
           </div>
-          <Button disabled={!tokenOneAmount || !tokenTwoAmount} variant="outlined" onClick={onSwap}>
+          <Button className={'!py-4 !bg-gradient-to-r from-cyan-400 to-blue-400 !text-white'} disabled={!tokenOneAmount || !tokenTwoAmount} variant="outlined" onClick={onSwap}>
             Swap
           </Button>
         </div>
