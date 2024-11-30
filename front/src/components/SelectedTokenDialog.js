@@ -6,16 +6,8 @@ import DialogTitle from '@mui/material/DialogTitle'
 import Dialog from '@mui/material/Dialog'
 import '../index.css'
 
-export function UIDialog(props) {
-  const { tokens,onClose, selectedValue, open } = props;
-
-  const handleClose = () => {
-    onClose(selectedValue);
-  };
-
-  const handleListItemClick = (value) => {
-    onClose(value);
-  };
+export function SelectedTokenDialog(props) {
+  const { tokens, open,setSelectedToken,handleCloseModal } = props;
 
   return (
     <div className="windows-scroll">
@@ -24,17 +16,17 @@ export function UIDialog(props) {
           borderRadius: 5,
           width: 400,
         },
-      }} onClose={handleClose} open={open}>
+      }} onClose={handleCloseModal} open={open}>
         <DialogTitle>Выбери токен</DialogTitle>
         <List  sx={{ pt: 0 }}>
-          {tokens.map(({ ticker, img, name }) => (
-            <ListItem disablePadding key={ticker} value={ticker}>
-              <ListItemButton onClick={() => handleListItemClick(ticker)}>
+          {tokens.map((token) => (
+            <ListItem disablePadding key={token.ticker} value={token.ticker}>
+              <ListItemButton onClick={() => setSelectedToken(token)}>
                 <div className="flex items-center gap-2">
-                  <img className="h-8 w-8" src={img} alt={ticker} />
+                  <img className="h-8 w-8" src={token.img} alt={token.ticker} />
                   <div className={'grid'}>
-                    <div className={'font-semibold text-lg'}>{ticker}</div>
-                    <div>{name}</div>
+                    <div className={'font-semibold text-lg'}>{token.ticker}</div>
+                    <div>{token.name}</div>
                   </div>
                 </div>
               </ListItemButton>
@@ -46,9 +38,9 @@ export function UIDialog(props) {
   );
 }
 
-UIDialog.propTypes = {
+SelectedTokenDialog.propTypes = {
   tokens: PropTypes.array.isRequired,
-  onClose: PropTypes.func.isRequired,
+  handleCloseModal: PropTypes.func.isRequired,
   open: PropTypes.bool.isRequired,
-  selectedValue: PropTypes.string.isRequired,
+  setSelectedToken: PropTypes.func.isRequired,
 };

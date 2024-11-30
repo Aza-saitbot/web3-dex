@@ -4,7 +4,7 @@ import { Button, ButtonGroup, Popover } from '@mui/material'
 import tokenList from '../tokenList.json'
 import { TokenInput } from './TokenInput'
 import SwapVertIcon from '@mui/icons-material/SwapVert'
-import { UIDialog } from './UIDialog'
+import { SelectedTokenDialog } from './SelectedTokenDialog'
 
 
 const buttons = [0.5, 2.5, 5.0].map((value) => (
@@ -21,6 +21,14 @@ const Swap = () => {
   const [tokenTwo, setTokenTwo] = useState(tokenList[1])
   const [isRotating, setIsRotating] = useState(false)
 
+  const [isOpenModal, setIsOpenModal] = useState(false);
+  const [modeSelectedToken,setModeSelectedToken]=useState(1)
+  const [selectedToken,setSelectedToken]=useState(null)
+
+
+  const onOpenModal = () => {
+    setIsOpenModal(true);
+  };
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget)
@@ -40,10 +48,29 @@ const Swap = () => {
     setTokenTwoAmount(tokenOneAmount)
   }
 
+  const onSelectedToken = (selectedToken) => {
+
+    setTokenOneAmount(null);
+    setTokenTwoAmount(null);
+    if (modeSelectedToken === 1) {
+      setTokenOne(selectedToken);
+
+    } else {
+      setTokenTwo(selectedToken);
+
+    }
+    setIsOpenModal(false);
+  }
   const open = Boolean(anchorEl)
   const id = open ? 'simple-popover' : undefined
 
+  const onSwap = () => {
+
+  }
+
   return (
+    <>
+      <SelectedTokenDialog tokens={tokenList} open={isOpenModal} handleCloseModal={()=>setIsOpenModal(false)} setSelectedToken={onSelectedToken}/>
       <div className="flex justify-center pt-16">
         <div className="grid grid-rows-[auto,1fr] bg-white w-[550px] h-[400px] p-4 rounded-2xl">
           <div className="flex justify-between">
@@ -70,7 +97,10 @@ const Swap = () => {
             <TokenInput
               amount={tokenOneAmount}
               onAmountChange={(e) => setTokenOneAmount(e.target.value)}
-              onOpenModal={onOpenModal}
+              onOpenModal={()=>{
+                setModeSelectedToken(1)
+                onOpenModal()
+              }}
               selectedToken={tokenOne}
             />
             <div className={'absolute right-[230px] z-10 top-1/2 -translate-y-1/2'}>
@@ -86,12 +116,20 @@ const Swap = () => {
             <TokenInput
               amount={tokenTwoAmount}
               onAmountChange={(e) => setTokenTwoAmount(e.target.value)}
-              onOpenModal={onOpenModal}
+              onOpenModal={()=>{
+                setModeSelectedToken(2)
+                onOpenModal()
+              }}
               selectedToken={tokenTwo}
             />
           </div>
+          <Button disabled={!tokenOneAmount || !tokenTwoAmount} variant="outlined" onClick={onSwap}>
+            Swap
+          </Button>
         </div>
       </div>
+    </>
+
   )
 }
 

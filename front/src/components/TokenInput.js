@@ -1,28 +1,14 @@
-import { Button, Input, MenuItem, Select } from '@mui/material'
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import React, { useState } from 'react'
-import { UIDialog } from './UIDialog'
-import tokenList from '../tokenList.json'
+import { Button, Input } from '@mui/material'
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
+import React from 'react'
 
 const settingsProps = {
   input: {
     style: { fontSize: 46 },
   },
 };
-export const TokenInput = ({ amount, onAmountChange, selectedToken,setSelectedToken,disabled }) => {
-  const [openModal, setOpenModal] = useState(false);
-  const onOpenModal = () => {
-    setOpenModal(true);
-  };
-
-  const handleCloseModal = (selectedToken) => {
-    setOpenModal(false);
-    setSelectedToken(selectedToken);
-  };
-
-  return <>
-    <UIDialog tokens={tokenList} onClose={handleCloseModal} open={openModal} selectedValue={selectedToken}/>
-    <div className="relative">
+export const TokenInput = ({ amount, onAmountChange, selectedToken,onOpenModal,disabled }) => {
+  return <div className="relative">
       <Input
         componentsProps={settingsProps}
         className="w-full h-full bg-gray-100 rounded-2xl pl-5"
@@ -40,6 +26,6 @@ export const TokenInput = ({ amount, onAmountChange, selectedToken,setSelectedTo
         </Button>
       </div>
     </div>
-  </>
+
 }
 
