@@ -2,7 +2,7 @@ import express, { Request, Response } from "express";
 import Moralis from "moralis";
 import cors from "cors";
 import dotenv from "dotenv";
-import {ITokenPriceRes} from './models';
+import {ITokenPriceQuery, ITokenPriceRes} from './models';
 
 dotenv.config();
 
@@ -12,14 +12,7 @@ const PORT = 5000;
 app.use(cors());
 app.use(express.json());
 
-
-
-interface TokenPriceQuery {
-  addressOne?: string;
-  addressTwo?: string;
-}
-
-app.get("/token-price", async (req: Request<{}, {}, {}, TokenPriceQuery>, res: Response) => {
+app.get("/token-price", async (req: Request<{}, {}, {}, ITokenPriceQuery>, res: Response) => {
   const { addressOne, addressTwo } = req.query;
 
   if (!addressOne || !addressTwo) {
