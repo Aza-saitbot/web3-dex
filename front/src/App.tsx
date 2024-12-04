@@ -1,5 +1,4 @@
-import { Button } from '@mui/material'
-import { Route, Routes } from 'react-router-dom'
+import {Route, Routes} from 'react-router-dom'
 import React from 'react'
 import Swap from './components/Swap'
 import Tokens from './components/Tokens'

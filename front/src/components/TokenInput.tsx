@@ -1,13 +1,22 @@
 import { Button, Input } from '@mui/material'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
-import React from 'react'
+import {ChangeEvent, FC} from 'react'
+import {ITokenItem} from '../models';
 
 const settingsProps = {
   input: {
     style: { fontSize: 46 },
   },
 };
-export const TokenInput = ({ amount, onAmountChange, selectedToken,onOpenModal,disabled }) => {
+
+interface ITokenInputProps {
+  amount: number
+  onAmountChange: (event: ChangeEvent<HTMLInputElement>) => void
+  selectedToken: ITokenItem
+  onOpenModal: () => void
+  disabled?: boolean
+}
+export const TokenInput:FC<ITokenInputProps> = ({ amount, onAmountChange, selectedToken,onOpenModal,disabled=false }) => {
   return <div className="relative">
       <Input
         componentsProps={settingsProps}

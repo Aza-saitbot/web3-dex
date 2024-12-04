@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from 'react'
+import {ChangeEvent, MouseEventHandler, useEffect, useState} from 'react'
 import SettingsIcon from '@mui/icons-material/Settings'
-import { Button, ButtonGroup, Popover } from '@mui/material'
+import {Button, ButtonGroup, Popover} from '@mui/material'
 import tokenList from '../tokenList.json'
-import { TokenInput } from './TokenInput'
+import {TokenInput} from './TokenInput'
 import SwapVertIcon from '@mui/icons-material/SwapVert'
-import { SelectedTokenDialog } from './SelectedTokenDialog'
+import {SelectedTokenDialog} from './SelectedTokenDialog'
 import axios from 'axios';
+import {ITokenItem, ITokenPriceDto} from '../models';
 
 
 const buttons = [0.5, 2.5, 5.0].map((value) => (
@@ -15,33 +16,36 @@ const buttons = [0.5, 2.5, 5.0].map((value) => (
 ))
 const Swap = () => {
   const [isOpenPopup, setIsOpenPopup] = useState(false)
-  const [anchorEl, setAnchorEl] = useState(null)
-  const [tokenOneAmount, setTokenOneAmount] = useState(0)
-  const [tokenTwoAmount, setTokenTwoAmount] = useState(0)
-  const [tokenOne, setTokenOne] = useState(tokenList[0])
-  const [tokenTwo, setTokenTwo] = useState(tokenList[1])
+  const [anchorEl, setAnchorEl] = useState<null | Element>(null)
+  const [tokenOneAmount, setTokenOneAmount] = useState<number>(0)
+  const [tokenTwoAmount, setTokenTwoAmount] = useState<number>(0)
+  const [tokenOne, setTokenOne] = useState<ITokenItem>(tokenList[0])
+  const [tokenTwo, setTokenTwo] = useState<ITokenItem>(tokenList[1])
   const [isRotating, setIsRotating] = useState(false)
 
   const [isOpenModal, setIsOpenModal] = useState(false)
   const [modeSelectedToken, setModeSelectedToken] = useState(1)
-  const [prices,setPrices]=useState(null)
+  const [prices, setPrices] = useState<ITokenPriceDto | null>(null)
 
   const onOpenModal = () => {
     setIsOpenModal(true)
   }
 
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget)
-    setIsOpenPopup(true)
+
+  const fetchPrices = async (one: string, two: string) => {
+    const res = await axios.get(`http://localhost:5000/token-price`, {
+      params: {addressOne: one, addressTwo: two}
+    })
+    setPrices(res.data)
   }
 
-
-  const onChangeAmountOne=(e)=> {
-    setTokenOneAmount(e.target.value);
-    if(e.target.value && prices){
-      setTokenTwoAmount((e.target.value * prices.ratio).toFixed(2))
-    }else{
-      setTokenTwoAmount(null);
+  const onChangeAmountOne = (e: ChangeEvent<HTMLInputElement>) => {
+    setTokenOneAmount(Number(e.target.value));
+    if (e.target.value && prices) {
+      const val = Number((Number(e.target.value) * prices.ratio).toFixed(2))
+      setTokenTwoAmount(val)
+    } else {
+      setTokenTwoAmount(0);
     }
   }
   const handleClose = () => {
@@ -55,36 +59,30 @@ const Swap = () => {
     setTokenTwo(tokenOne)
     setTokenOneAmount(tokenTwoAmount)
     setTokenTwoAmount(tokenOneAmount)
+    fetchPrices(tokenOne.address, tokenTwo.address)
   }
 
-  const onSelectedToken = (selectedToken) => {
+  const onSelectedToken = (selectedToken: ITokenItem) => {
     setPrices(null)
-    setTokenOneAmount(null)
-    setTokenTwoAmount(null)
+    setTokenOneAmount(0)
+    setTokenTwoAmount(0)
     if (modeSelectedToken === 1) {
       setTokenOne(selectedToken)
       fetchPrices(selectedToken.address, tokenTwo.address)
     } else {
       setTokenTwo(selectedToken)
-      fetchPrices(selectedToken.address, tokenTwo.address)
+      fetchPrices(tokenOne.address, selectedToken.address)
     }
     setIsOpenModal(false)
   }
   const open = Boolean(anchorEl)
   const id = open ? 'simple-popover' : undefined
 
-  const fetchPrices = async (one, two) => {
-    const res = await axios.get(`http://localhost:5000/token-price`, {
-      params: {addressOne: one, addressTwo: two}
-    })
-    setPrices(res.data)
-  }
-
   const onSwap = () => {
 
   }
 
-  useEffect(()=>{
+  useEffect(() => {
     fetchPrices(tokenList[0].address, tokenList[1].address)
   }, [])
 
@@ -96,7 +94,13 @@ const Swap = () => {
         <div className="grid gap-2 grid-rows-[auto,1fr] bg-white w-[550px] h-[400px] p-4 rounded-2xl">
           <div className="flex justify-between">
             <p className="text-2xl">Swap</p>
-            <Button aria-describedby={id} variant="text" onClick={handleClick}>
+            <Button aria-describedby={id} variant="text" onClick={e => {
+              {
+                setAnchorEl(e.currentTarget)
+                setIsOpenPopup(true)
+              }
+            }
+            }>
               <SettingsIcon style={{cursor: 'pointer', color: 'black'}}/>
             </Button>
             <Popover
@@ -136,7 +140,7 @@ const Swap = () => {
             </div>
             <TokenInput
               amount={tokenTwoAmount}
-              onAmountChange={(e) => setTokenTwoAmount(e.target.value)}
+              onAmountChange={(e) => setTokenTwoAmount(Number(e.target.value))}
               onOpenModal={() => {
                 setModeSelectedToken(2)
                 onOpenModal()
