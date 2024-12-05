@@ -1,4 +1,4 @@
-import {ChangeEvent, MouseEventHandler, useEffect, useState} from 'react'
+import {ChangeEvent, useEffect, useState} from 'react'
 import SettingsIcon from '@mui/icons-material/Settings'
 import {Button, ButtonGroup, Popover} from '@mui/material'
 import tokenList from '../tokenList.json'
