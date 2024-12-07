@@ -75,8 +75,8 @@ const Swap = () => {
     }
     setIsOpenModal(false)
   }
-  const open = Boolean(anchorEl)
-  const id = open ? 'simple-popover' : undefined
+
+  const id = !!anchorEl ? 'simple-popover' : undefined
 
   const onSwap = () => {
 
